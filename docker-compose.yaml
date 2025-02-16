@@ -6,7 +6,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_NAME=postgres
+      - DATABASE_NAME=parted
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=postgres
       - DATABASE_HOST=db
@@ -19,7 +19,7 @@ services:
     ports:
       - "9998:5432"
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: parted
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
