@@ -24,7 +24,12 @@ package-mode = false
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.6"
 pytest = "^8.3.4"
+pytest-django = "^4.10.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+addopts = "-vv"
