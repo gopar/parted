@@ -13,6 +13,8 @@ services:
       - DATABASE_PORT=5432
     volumes:
       - .:/app
+    networks:
+      - parted_network
 
   db:
     image: postgres:latest
@@ -24,6 +26,12 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - parted_network
 
 volumes:
   postgres_data:
+
+networks:
+  parted_network:
+    driver: bridge
