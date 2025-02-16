@@ -51,6 +51,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "django_htmx",
     "django_cotton",
+    "django_extensions",
 ]
 
 LOCAL_APPS = [ "apps.user", ]
