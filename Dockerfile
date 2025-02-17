@@ -3,6 +3,7 @@ FROM python:3.12
 
 # Environment variables for Poetry
 ENV PYTHONUNBUFFERED=1 \
+    PYTHONDEVMODE=1 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=0 \
     POETRY_NO_INTERACTION=1 \
