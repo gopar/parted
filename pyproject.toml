@@ -25,6 +25,7 @@ package-mode = false
 ruff = "^0.9.6"
 pytest = "^8.3.4"
 pytest-django = "^4.10.0"
+rich = "^13.9.4"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
