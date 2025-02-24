@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from typing import List
 from pathlib import Path
 import environ
 
@@ -21,20 +22,20 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
-env.prefix = 'DJANGO_'
-environ.Env.read_env(BASE_DIR / '.env')
+env.prefix = "DJANGO_"
+environ.Env.read_env(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List[str] = []
 
 
 # Application definition
@@ -54,7 +55,9 @@ THIRD_PARTY_APPS = [
     "django_extensions",
 ]
 
-LOCAL_APPS = [ "apps.user", ]
+LOCAL_APPS = [
+    "apps.user",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -93,9 +96,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": env.db()
-}
+DATABASES = {"default": env.db()}
 
 
 # Password validation
