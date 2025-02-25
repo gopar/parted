@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Parted App{% endblock %}</title>
+
+    {# Block for additional CSS files #}
+    {% block extra_head %}
+    {% endblock %}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.12.23/full.css"
+          integrity="sha512-liVdpj1E7WACFJBjb9MexsvLC33vmuHcrmR+nw42OaRl13zpHWHJofEKTP3M84Ah82zJTBvei6ggHlSv9aLz8Q=="
+          type="text/css"
+          media="screen" />
+  </head>
+  <body class="bg-base-200 text-base-content">
+    {# Navigation bar #}
+    <nav class="navbar bg-base-100 shadow">
+      <div class="container mx-auto flex justify-between items-center px-4">
+        <a class="btn btn-ghost text-xl" href="{% url 'index' %}">Parted App</a>
+
+        <div class="hidden lg:flex space-x-4">
+          <a class="btn btn-ghost" href="{% url 'index' %}">Home</a>
+          <a class="btn btn-ghost" href="{% url 'about' %}">About</a>
+        </div>
+
+        {# Mobile menu button #}
+        <label class="btn btn-ghost lg:hidden swap swap-rotate">
+          <input type="checkbox" />
+          <svg class="swap-off fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18m-18 6h18"/></svg>
+          <svg class="swap-on fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </label>
+      </div>
+    </nav>
+
+    {# Content block to be overridden in child templates #}
+    <div class="container mx-auto mt-6 px-4">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    {# Footer #}
+    <footer class="footer footer-center p-6 bg-base-300 mt-10">
+      <p>&copy; 2024 My Django Site</p>
+    </footer>
+
+    {# Additional JavaScript block #}
+    {% block extra_js %}
+    {% endblock %}
+  </body>
+</html>
