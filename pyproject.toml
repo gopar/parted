@@ -67,8 +67,8 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
-    "config/settings"
-
+    "config/settings",
+    "migrations",
 ]
 
 # Same as Black.
