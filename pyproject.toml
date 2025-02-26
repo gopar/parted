@@ -14,7 +14,8 @@ dependencies = [
     "django-cotton (>=1.5.2,<2.0.0)",
     "django-htmx (>=1.22.0,<2.0.0)",
     "django-extensions (>=3.2.3,<4.0.0)",
-    "django-model-utils (>=5.0.0,<6.0.0)"
+    "django-model-utils (>=5.0.0,<6.0.0)",
+    "django-allauth[socialaccount] (>=65.4.1,<66.0.0)"
 ]
 
 [tool.poetry]
