@@ -1,0 +1,89 @@
+{% extends "base/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+  <h1 class="text-3xl font-bold text-center mb-6">{% trans "Sign In" %}</h1>
+
+  {% get_providers as socialaccount_providers %}
+
+  {% if socialaccount_providers %}
+    <div class="divider">{% trans "Sign in with" %}</div>
+
+    <div class="socialaccount_ballot flex flex-wrap justify-center gap-2 mb-6">
+      <ul class="socialaccount_providers flex gap-2">
+        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+      </ul>
+    </div>
+
+    <div class="divider">{% trans "or" %}</div>
+  {% endif %}
+
+  <p class="text-center mb-4">
+    {% blocktrans %}If you have not created an account yet, then please
+    <a href="{{ signup_url }}" class="link link-primary">sign up</a> first.{% endblocktrans %}
+  </p>
+
+  <form class="login card bg-base-100 shadow-xl" method="POST" action="{% url 'account_login' %}">
+    <div class="card-body">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-error mb-4">
+          {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="form-control">
+        <label class="label" for="{{ form.login.id_for_label }}">
+          <span class="label-text">{% trans "Email" %}</span>
+        </label>
+        <input type="email" name="{{ form.login.html_name }}" placeholder="email@example.com"
+               id="{{ form.login.id_for_label }}" class="input input-bordered w-full" required
+               {% if form.login.value %}value="{{ form.login.value }}"{% endif %}>
+        {% if form.login.errors %}
+        <div class="text-error text-sm mt-1">{{ form.login.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="{{ form.password.id_for_label }}">
+          <span class="label-text">{% trans "Password" %}</span>
+        </label>
+        <input type="password" name="{{ form.password.html_name }}" placeholder="••••••••"
+               id="{{ form.password.id_for_label }}" class="input input-bordered w-full" required>
+        {% if form.password.errors %}
+        <div class="text-error text-sm mt-1">{{ form.password.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-control">
+        <label class="label cursor-pointer justify-start gap-2">
+          <input type="checkbox" name="{{ form.remember.html_name }}" class="checkbox checkbox-primary"
+                 id="{{ form.remember.id_for_label }}" {% if form.remember.value %}checked{% endif %}>
+          <span class="label-text">{% trans "Remember Me" %}</span>
+        </label>
+      </div>
+
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+
+      <div class="form-control mt-4">
+        <div class="label">
+          <a href="{% url 'account_reset_password' %}" class="link link-primary">
+            {% trans "Forgot Password?" %}
+          </a>
+        </div>
+        <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+<li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'index' %}">Home</a></li>
+<li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'about' %}">About</a></li>
+{% if user.is_authenticated %}
+  <li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'account_logout' %}">Logout</a></li>
+{% else %}
+  <li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'account_login' %}">Login</a></li>
+{% endif %}

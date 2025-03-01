@@ -1,5 +1,19 @@
 {% extends "./base.html" %}
 
 {% block content %}
-  <p>Hello Hanny</p>
+  <div class="text-center">
+    {% if user.is_authenticated %}
+
+    {% else %}
+      <div class="hero min-h-[50vh]">
+        <div class="hero-content text-center">
+          <div class="max-w-md">
+            <h1 class="text-5xl font-bold">Hello Future Fan!</h1>
+            <p class="py-6">Join Parted App today to discover and share amazing music.</p>
+            <a href="#" class="btn btn-primary">Get Started</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
 {% endblock content %}

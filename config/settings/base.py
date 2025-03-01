@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from django.contrib.messages import constants as messages
 from typing import List
 from pathlib import Path
 import environ
@@ -85,7 +86,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "apps"],
+        "DIRS": [BASE_DIR / "apps" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -174,3 +175,12 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGIN_METHODS = {"email"}
+
+# Django messages framework tags mapping to DaisyUI classes
+MESSAGE_TAGS = {
+    messages.DEBUG: "info",
+    messages.INFO: "info",
+    messages.SUCCESS: "success",
+    messages.WARNING: "warning",
+    messages.ERROR: "error",
+}
