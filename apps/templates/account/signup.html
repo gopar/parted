@@ -2,15 +2,15 @@
 
 {% load i18n %}
 
-{% block title %}{% trans "Sign Up" %}{% endblock %}
+{% block title %}{% translate "Sign Up" %}{% endblock %}
 
 {% block content %}
 <div class="max-w-md mx-auto">
-  <h1 class="text-3xl font-bold text-center mb-6">{% trans "Sign Up" %}</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">{% translate "Sign Up" %}</h1>
   
   <p class="text-center mb-4">
-    {% blocktrans %}Already have an account? Then please 
-    <a href="{{ login_url }}" class="link link-primary">sign in</a>.{% endblocktrans %}
+    {% blocktranslate %}Already have an account? Then please 
+    <a href="{{ login_url }}" class="link link-primary">sign in</a>.{% endblocktranslate %}
   </p>
   
   <form class="signup card bg-base-100 shadow-xl" id="signup_form" method="post" action="{% url 'account_signup' %}">
@@ -27,7 +27,7 @@
       
       <div class="form-control">
         <label class="label" for="{{ form.email.id_for_label }}">
-          <span class="label-text">{% trans "Email" %}</span>
+          <span class="label-text">{% translate "Email" %}</span>
         </label>
         <input type="email" name="{{ form.email.html_name }}" placeholder="email@example.com" 
                id="{{ form.email.id_for_label }}" class="input input-bordered w-full" required
@@ -39,7 +39,7 @@
       
       <div class="form-control">
         <label class="label" for="{{ form.password1.id_for_label }}">
-          <span class="label-text">{% trans "Password" %}</span>
+          <span class="label-text">{% translate "Password" %}</span>
         </label>
         <input type="password" name="{{ form.password1.html_name }}" placeholder="••••••••" 
                id="{{ form.password1.id_for_label }}" class="input input-bordered w-full" required>
@@ -53,7 +53,7 @@
       
       <div class="form-control">
         <label class="label" for="{{ form.password2.id_for_label }}">
-          <span class="label-text">{% trans "Confirm Password" %}</span>
+          <span class="label-text">{% translate "Confirm Password" %}</span>
         </label>
         <input type="password" name="{{ form.password2.html_name }}" placeholder="••••••••" 
                id="{{ form.password2.id_for_label }}" class="input input-bordered w-full" required>
@@ -67,9 +67,9 @@
       {% endif %}
       
       <div class="form-control mt-4">
-        <button class="btn btn-primary" type="submit">{% trans "Sign Up" %}</button>
+        <button class="btn btn-primary" type="submit">{% translate "Sign Up" %}</button>
       </div>
     </div>
   </form>
 </div>
-{% endblock %}
+{% endblock content %}

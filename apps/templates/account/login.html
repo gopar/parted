@@ -1,18 +1,17 @@
 {% extends "base/base.html" %}
 
-{% load i18n %}
-{% load account socialaccount %}
+{% load account i18n socialaccount %}
 
-{% block title %}{% trans "Sign In" %}{% endblock %}
+{% block title %}{% translate "Sign In" %}{% endblock %}
 
 {% block content %}
 <div class="max-w-md mx-auto">
-  <h1 class="text-3xl font-bold text-center mb-6">{% trans "Sign In" %}</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">{% translate "Sign In" %}</h1>
 
   {% get_providers as socialaccount_providers %}
 
   {% if socialaccount_providers %}
-    <div class="divider">{% trans "Sign in with" %}</div>
+    <div class="divider">{% translate "Sign in with" %}</div>
 
     <div class="socialaccount_ballot flex flex-wrap justify-center gap-2 mb-6">
       <ul class="socialaccount_providers flex gap-2">
@@ -20,12 +19,12 @@
       </ul>
     </div>
 
-    <div class="divider">{% trans "or" %}</div>
+    <div class="divider">{% translate "or" %}</div>
   {% endif %}
 
   <p class="text-center mb-4">
-    {% blocktrans %}If you have not created an account yet, then please
-    <a href="{{ signup_url }}" class="link link-primary">sign up</a> first.{% endblocktrans %}
+    {% blocktranslate %}If you have not created an account yet, then please
+    <a href="{{ signup_url }}" class="link link-primary">sign up</a> first.{% endblocktranslate %}
   </p>
 
   <form class="login card bg-base-100 shadow-xl" method="POST" action="{% url 'account_login' %}">
@@ -42,7 +41,7 @@
 
       <div class="form-control">
         <label class="label" for="{{ form.login.id_for_label }}">
-          <span class="label-text">{% trans "Email" %}</span>
+          <span class="label-text">{% translate "Email" %}</span>
         </label>
         <input type="email" name="{{ form.login.html_name }}" placeholder="email@example.com"
                id="{{ form.login.id_for_label }}" class="input input-bordered w-full" required
@@ -54,7 +53,7 @@
 
       <div class="form-control">
         <label class="label" for="{{ form.password.id_for_label }}">
-          <span class="label-text">{% trans "Password" %}</span>
+          <span class="label-text">{% translate "Password" %}</span>
         </label>
         <input type="password" name="{{ form.password.html_name }}" placeholder="••••••••"
                id="{{ form.password.id_for_label }}" class="input input-bordered w-full" required>
@@ -67,7 +66,7 @@
         <label class="label cursor-pointer justify-start gap-2">
           <input type="checkbox" name="{{ form.remember.html_name }}" class="checkbox checkbox-primary"
                  id="{{ form.remember.id_for_label }}" {% if form.remember.value %}checked{% endif %}>
-          <span class="label-text">{% trans "Remember Me" %}</span>
+          <span class="label-text">{% translate "Remember Me" %}</span>
         </label>
       </div>
 
@@ -78,12 +77,12 @@
       <div class="form-control mt-4">
         <div class="label">
           <a href="{% url 'account_reset_password' %}" class="link link-primary">
-            {% trans "Forgot Password?" %}
+            {% translate "Forgot Password?" %}
           </a>
         </div>
-        <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+        <button class="btn btn-primary" type="submit">{% translate "Sign In" %}</button>
       </div>
     </div>
   </form>
 </div>
-{% endblock %}
+{% endblock content %}

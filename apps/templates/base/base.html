@@ -18,7 +18,7 @@
 
     {# Block for additional CSS files #}
     {% block extra_head %}
-    {% endblock %}
+    {% endblock extra_head %}
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.12.23/full.css"
@@ -64,7 +64,7 @@
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           {% block content %}
-          {% endblock %}
+          {% endblock content %}
         </div>
       </div>
     </main>
@@ -79,7 +79,7 @@
 
     {# Additional JavaScript block #}
     {% block extra_js %}
-    {% endblock %}
+    {% endblock extra_js %}
 
     <script>
       // Theme toggle functionality
