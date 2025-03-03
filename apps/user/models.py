@@ -53,3 +53,24 @@ class User(AbstractUser):
 
     def __str__(self) -> str:
         return self.email
+
+
+class FanProfile(TimeStampedModel):
+    """Stores non-artist user data like favorites and purchases."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+    # favorite_songs = models.ManyToManyField(
+    #     "Song", blank=True, related_name="favorited_by"
+    # )
+    # purchased_songs = models.ManyToManyField(
+    #     "Song", blank=True, related_name="purchased_by"
+    # )
+    following = models.ManyToManyField("artist.Artist", related_name="followers", blank=True)
+    bio = models.TextField()
+
+    def __str__(self) -> str:
+        return f"Fan profile of {self.user.email}"
