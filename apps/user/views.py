@@ -8,7 +8,12 @@ def index(request: HttpRequest) -> HttpResponse:
         "profile_image": "https://placehold.co/200x200",
         "main_genre": "Jazz",
     }
-    return render(request, "pages/home_feed.html", context={"artists": [mock_artist for _ in range(5)]})
+
+    template = "pages/index.html"
+    if request.user.is_authenticated:
+        template = "pages/home_feed.html"
+
+    return render(request, template, context={"artists": [mock_artist for _ in range(5)]})
 
 
 def about(request: HttpRequest) -> HttpResponse:

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Parted App{% endblock %}</title>
 
     <script>
-      // Check for saved theme preference or use device preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const savedTheme = localStorage.getItem('theme');
-      // Use saved theme if available, otherwise use system preference
-      const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', initialTheme);
+    // Check for saved theme preference or use device preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme');
+    // Use saved theme if available, otherwise use system preference
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    /* const initialTheme = savedTheme || (prefersDark ? 'dim' : 'nord'); */
+    document.documentElement.setAttribute('data-theme', initialTheme);
     </script>
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -33,7 +34,7 @@
     <nav class="navbar bg-base-100 shadow-sm">
       <!-- Left: App Name -->
       <div class="navbar-start">
-        <a class="btn btn-ghost text-xl">Parted</a>
+        <a class="btn btn-ghost text-xl" href="{% url 'index' %}">Parted</a>
       </div>
 
       <!-- Center: Search Bar -->
@@ -46,47 +47,56 @@
 
       <!-- Right: Alert Button & Profile Dropdown -->
       <div class="navbar-end gap-2">
-        <!-- Alert Button -->
-        <a href="#" class="btn btn-ghost btn-circle">
-          <div class="indicator">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-            <span class="badge badge-xs badge-primary indicator-item"></span>
-          </div>
-        </a>
-
-        <!-- Profile Dropdown -->
-        <div class="dropdown dropdown-end">
-          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full">
-              <img
-                alt="User Avatar"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+        {% if not user.is_authenticated %}
+          <a class="btn btn-ghost" href="{% url 'about' %}">About</a>
+          <a class="btn btn-ghost" href="{% url 'account_login' %}">Login</a>
+        {% else %}
+          <!-- Alert Button -->
+          <a href="#" class="btn btn-ghost btn-circle">
+            <div class="indicator">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+              <span class="badge badge-xs badge-primary indicator-item"></span>
             </div>
+          </a>
+
+          <!-- Profile Dropdown -->
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                <img
+                  alt="User Avatar"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                />
+              </div>
+            </div>
+            <ul
+              tabindex="0"
+              class="menu dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
+            >
+              <li><a>Profile</a></li>
+              <li><a>Settings</a></li>
+              <div class="divider m-0 p-0"></div>
+              <li>
+                <a href="#" class="text-red-500" onclick="document.getElementById('logout-modal').showModal(); event.stopPropagation();">
+                  Logout
+                </a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabindex="0"
-            class="menu dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
-          >
-            <li><a>Profile</a></li>
-            <li><a>Settings</a></li>
-            <div class="divider m-0"></div>
-            <li><a class="text-red-500">Logout</a></li>
-          </ul>
-        </div>
+        {% endif %}
       </div>
     </nav>
 
@@ -113,36 +123,56 @@
     {% block extra_js %}
     {% endblock extra_js %}
 
-    <script>
-    // Theme toggle functionality
-    const themeToggle = document.querySelector('.theme-controller');
+    <!-- Logout confirmation modal -->
+    <dialog id="logout-modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Confirm Logout</h3>
+        <p class="py-4">Are you sure you want to log out?</p>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn btn-outline mr-10">Cancel</button>
+          </form>
+          <form action="{% url 'account_logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Logout</button>
+          </form>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
 
-    // Function to update theme based on toggle state
-    function updateTheme(isDark, fromSystem = false) {
-      const newTheme = isDark ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      themeToggle.checked = isDark;
-      // Only save to localStorage if manually toggled
-      if (!fromSystem) {
-        console.log('manually toggled')
-        localStorage.setItem('theme', newTheme);
-      }
-    }
+    <!-- <script>
+         // Theme toggle functionality
+         const themeToggle = document.querySelector('.theme-controller');
 
-    // Set initial state of toggle based on current theme
-    themeToggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+         // Function to update theme based on toggle state
+         function updateTheme(isDark, fromSystem = false) {
+         const newTheme = isDark ? 'dark' : 'light';
+         document.documentElement.setAttribute('data-theme', newTheme);
+         themeToggle.checked = isDark;
+         // Only save to localStorage if manually toggled
+         if (!fromSystem) {
+         console.log('manually toggled')
+         localStorage.setItem('theme', newTheme);
+         }
+         }
 
-    // Listen for toggle changes
-    themeToggle.addEventListener('change', function() {
-      updateTheme(this.checked);
-    });
+         // Set initial state of toggle based on current theme
+         themeToggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
 
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-      if (!localStorage.getItem('theme')) {
-        updateTheme(e.matches, true);
-      }
-    });
-    </script>
+         // Listen for toggle changes
+         themeToggle.addEventListener('change', function() {
+         updateTheme(this.checked);
+         });
+
+         // Listen for system theme changes
+         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+         if (!localStorage.getItem('theme')) {
+         updateTheme(e.matches, true);
+         }
+         });
+         </script> -->
   </body>
 </html>
