@@ -1,0 +1,29 @@
+<div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow {% if hidden %}hidden md:block{% endif %}">
+  <figure class="px-4 pt-4">
+    <img
+      {% if artist.profile_image %}
+        src="{{ artist.profile_image }}"
+      {% else %}
+        src="https://placehold.co/200x200"
+      {% endif %}
+      alt="{{ artist.name }} profile image"
+      class="rounded-xl object-cover h-40 w-full" />
+    {% if badge %}
+      <div class="absolute top-6 right-6 badge badge-primary">{{ badge }}</div>
+    {% endif %}
+  </figure>
+
+  <div class="card-body p-4">
+
+    <h3 class="card-title text-base">{{ artist.name }}</h3>
+    <p class="text-sm opacity-70">{{ artist.main_genre }}</p>
+
+    <div class="card-actions justify-end mt-2">
+      <button class="btn btn-sm btn-primary btn-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

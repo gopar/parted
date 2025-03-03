@@ -1,0 +1,9 @@
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+  {% for artist in artists %}
+    {% if forloop.last %}
+      {% include "components/artist_card.html" with artist=artist hidden=True %}
+    {% else %}
+      {% include "components/artist_card.html" with artist=artist hidden=False %}
+    {% endif %}
+  {% endfor %}
+</div>

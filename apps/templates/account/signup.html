@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
@@ -7,16 +7,16 @@
 {% block content %}
 <div class="max-w-md mx-auto">
   <h1 class="text-3xl font-bold text-center mb-6">{% translate "Sign Up" %}</h1>
-  
+
   <p class="text-center mb-4">
-    {% blocktranslate %}Already have an account? Then please 
+    {% blocktranslate %}Already have an account? Then please
     <a href="{{ login_url }}" class="link link-primary">sign in</a>.{% endblocktranslate %}
   </p>
-  
+
   <form class="signup card bg-base-100 shadow-xl" id="signup_form" method="post" action="{% url 'account_signup' %}">
     <div class="card-body">
       {% csrf_token %}
-      
+
       {% if form.non_field_errors %}
         <div class="alert alert-error mb-4">
           {% for error in form.non_field_errors %}
@@ -24,24 +24,24 @@
           {% endfor %}
         </div>
       {% endif %}
-      
+
       <div class="form-control">
         <label class="label" for="{{ form.email.id_for_label }}">
           <span class="label-text">{% translate "Email" %}</span>
         </label>
-        <input type="email" name="{{ form.email.html_name }}" placeholder="email@example.com" 
+        <input type="email" name="{{ form.email.html_name }}" placeholder="email@example.com"
                id="{{ form.email.id_for_label }}" class="input input-bordered w-full" required
                {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
         {% if form.email.errors %}
           <div class="text-error text-sm mt-1">{{ form.email.errors }}</div>
         {% endif %}
       </div>
-      
+
       <div class="form-control">
         <label class="label" for="{{ form.password1.id_for_label }}">
           <span class="label-text">{% translate "Password" %}</span>
         </label>
-        <input type="password" name="{{ form.password1.html_name }}" placeholder="••••••••" 
+        <input type="password" name="{{ form.password1.html_name }}" placeholder="••••••••"
                id="{{ form.password1.id_for_label }}" class="input input-bordered w-full" required>
         {% if form.password1.errors %}
           <div class="text-error text-sm mt-1">{{ form.password1.errors }}</div>
@@ -50,22 +50,22 @@
           <div class="text-sm mt-1 text-base-content/70">{{ form.password1.help_text }}</div>
         {% endif %}
       </div>
-      
+
       <div class="form-control">
         <label class="label" for="{{ form.password2.id_for_label }}">
           <span class="label-text">{% translate "Confirm Password" %}</span>
         </label>
-        <input type="password" name="{{ form.password2.html_name }}" placeholder="••••••••" 
+        <input type="password" name="{{ form.password2.html_name }}" placeholder="••••••••"
                id="{{ form.password2.id_for_label }}" class="input input-bordered w-full" required>
         {% if form.password2.errors %}
           <div class="text-error text-sm mt-1">{{ form.password2.errors }}</div>
         {% endif %}
       </div>
-      
+
       {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
       {% endif %}
-      
+
       <div class="form-control mt-4">
         <button class="btn btn-primary" type="submit">{% translate "Sign Up" %}</button>
       </div>

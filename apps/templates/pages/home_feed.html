@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Music Feed - Parted App{% endblock %}
+
+{% block content %}
+  <div class="space-y-8">
+    <!-- New Artists Section -->
+    {% include "components/artist_section.html" with
+    artists=artists
+    section_title="New Artists"
+    view_more_link="#" %}
+
+    <!-- Favorite Artists Section -->
+    {% include "components/artist_section.html" with
+    artists=artists
+    section_title="Favorite Artists"
+    view_more_link="#" %}
+
+    <!-- Trending Artists Section -->
+    {% include "components/artist_section.html" with
+    artists=artists
+    section_title="Trending Artists"
+    badge="Trending"
+    view_more_link="#" %}
+
+    <!-- Random Artists Section -->
+    {% include "components/artist_section.html" with
+    artists=artists
+    section_title="Random Artists"
+    view_more_link="#" %}
+  </div>
+{% endblock content %}
