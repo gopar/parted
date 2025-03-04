@@ -16,12 +16,10 @@ class HomePageDTO:
 
 def get_homepage_data() -> HomePageDTO:
     """Get all data needed for the homepage."""
-    prefetch = ["genres", "members"]
+    prefetch = ["genres", "main_genre"]
     return HomePageDTO(
         latest_artists=get_latest_artists(prefetch_related=prefetch),
         random_artists=get_random_artists(prefetch_related=prefetch),
-        # For now, random artists are used as favorites
-        # This should be replaced with actual favorites logic
-        favorite_artists=get_random_artists(prefetch_related=prefetch),
+        favorite_artists=[],
         christian_artists=get_artists_by_genre("Christian", prefetch_related=prefetch),
     )
