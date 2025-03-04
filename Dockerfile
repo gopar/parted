@@ -23,7 +23,7 @@ ENV PATH="$POETRY_HOME/bin:$PATH"
 COPY pyproject.toml poetry.lock ./
 
 # Install dependencies via Poetry
-RUN poetry install
+RUN poetry install --all-groups
 
 # Copy the rest of the application
 COPY . .
