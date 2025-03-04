@@ -13,6 +13,14 @@ class Genre(TimeStampedModel):
         ordering = ["name"]
 
 
+class ArtistQuerySet(models.QuerySet["Artist"]):
+    def with_latest_artists(self) -> models.QuerySet["Artist"]:
+        """
+        Returns the latest n artists by creation date
+        """
+        return self.order_by("-created")
+
+
 class Artist(TimeStampedModel):
     name = models.CharField(max_length=255, blank=False, null=False)
     members = models.ManyToManyField(
@@ -28,6 +36,8 @@ class Artist(TimeStampedModel):
         blank=True,
     )
     genres = models.ManyToManyField(Genre, related_name="artists", blank=True)
+
+    objects = ArtistQuerySet.as_manager()
 
     def __str__(self) -> str:
         return self.name

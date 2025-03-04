@@ -1,19 +1,26 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
+from apps.user.services import get_homepage_data
+
 
 def index(request: HttpRequest) -> HttpResponse:
-    mock_artist = {
-        "name": "John Doe",
-        "profile_image": "https://placehold.co/200x200",
-        "main_genre": "Jazz",
-    }
-
     template = "pages/index.html"
     if request.user.is_authenticated:
         template = "pages/home_feed.html"
 
-    return render(request, template, context={"artists": [mock_artist for _ in range(5)]})
+    homepage_data = get_homepage_data()
+
+    return render(
+        request,
+        template,
+        context={
+            "latest_artists": homepage_data.latest_artists,
+            "random_artists": homepage_data.random_artists,
+            "favorite_artists": homepage_data.favorite_artists,
+            "christian_artists": homepage_data.christian_artists,
+        },
+    )
 
 
 def about(request: HttpRequest) -> HttpResponse:
