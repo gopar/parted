@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from django.db.models import QuerySet
 
 from apps.artist.models import Artist
-from apps.artist.selectors import get_latest_artists
+from apps.artist.selectors import get_favorite_artists, get_latest_artists
 
 
 @dataclass
@@ -17,5 +17,5 @@ def get_homepage_data() -> HomePageDTO:
     prefetch = ["genres", "main_genre"]
     return HomePageDTO(
         latest_artists=get_latest_artists(prefetch_related=prefetch),
-        favorite_artists=[],
+        favorite_artists=get_favorite_artists(prefetch_related=prefetch),
     )

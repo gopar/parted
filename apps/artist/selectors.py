@@ -14,6 +14,11 @@ def get_latest_artists(count: int = 5, prefetch_related: List[str] | None = None
     return queryset[:count]
 
 
+def get_favorite_artists(count: int = 5, prefetch_related: List[str] | None = None) -> QuerySet[Artist]:
+    """Get the favorite artists by creation date."""
+    return Artist.objects.none()
+
+
 def get_random_artists(count: int = 5, prefetch_related: List[str] | None = None) -> QuerySet[Artist]:
     """Get random artists."""
     queryset = Artist.objects.order_by(Random())
