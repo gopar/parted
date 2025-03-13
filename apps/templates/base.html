@@ -51,7 +51,7 @@
           <a class="btn btn-ghost" href="{% url 'account_login' %}">Login</a>
         {% else %}
           <!-- Alert Button -->
-          <a href="#" class="btn btn-ghost btn-circle">
+          <a href="{% url 'news-feed' %}" class="btn btn-ghost btn-circle">
             <div class="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -85,8 +85,8 @@
               tabindex="0"
               class="menu dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
             >
-              <li><a>Profile</a></li>
-              <li><a>Settings</a></li>
+              <li><a href="{% url 'profile' %}">Profile</a></li>
+              <li><a href="{% url 'settings' %}">Settings</a></li>
               <div class="divider m-0 p-0"></div>
               <li>
                 <a href="#" class="text-red-500" onclick="document.getElementById('logout-modal').showModal(); event.stopPropagation();">

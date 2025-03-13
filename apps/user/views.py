@@ -23,3 +23,15 @@ def index(request: HttpRequest) -> HttpResponse:
 
 def about(request: HttpRequest) -> HttpResponse:
     return render(request, "pages/about.html")
+
+
+def news_feed(request: HttpRequest) -> HttpResponse:
+    return render(request, "pages/news_feed.html")
+
+
+def profile(request: HttpRequest) -> HttpResponse:
+    return render(request, "pages/profile.html")
+
+
+def settings(request: HttpRequest) -> HttpResponse:
+    return render(request, "pages/settings.html")
