@@ -16,9 +16,7 @@ def index(request: HttpRequest) -> HttpResponse:
         template,
         context={
             "latest_artists": homepage_data.latest_artists,
-            "random_artists": homepage_data.random_artists,
             "favorite_artists": homepage_data.favorite_artists,
-            "christian_artists": homepage_data.christian_artists,
         },
     )
 

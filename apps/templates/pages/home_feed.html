@@ -1,32 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Music Feed - Parted App{% endblock %}
+{% block title %}Home - Parted App{% endblock %}
 
 {% block content %}
   <div class="space-y-8">
-    <!-- New Artists Section -->
+    <!-- Latest Artists Section -->
     {% include "components/artist_section.html" with
     artists=latest_artists
-    section_title="New Artists"
+    section_title="Latest Artists"
     view_more_link="#" %}
 
     <!-- Favorite Artists Section -->
     {% include "components/artist_section.html" with
     artists=favorite_artists
     section_title="Favorite Artists"
-    view_more_link="#" %}
-
-    <!-- Trending Artists Section -->
-    {% include "components/artist_section.html" with
-    artists=christian_artists
-    section_title="Christian Artists"
-    badge="Christian"
-    view_more_link="#" %}
-
-    <!-- Random Artists Section -->
-    {% include "components/artist_section.html" with
-    artists=random_artists
-    section_title="Random Artists"
     view_more_link="#" %}
   </div>
 {% endblock content %}

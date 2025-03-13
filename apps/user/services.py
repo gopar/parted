@@ -3,15 +3,13 @@ from dataclasses import dataclass
 from django.db.models import QuerySet
 
 from apps.artist.models import Artist
-from apps.artist.selectors import get_artists_by_genre, get_latest_artists, get_random_artists
+from apps.artist.selectors import get_latest_artists
 
 
 @dataclass
 class HomePageDTO:
     latest_artists: QuerySet[Artist]
-    random_artists: QuerySet[Artist]
     favorite_artists: QuerySet[Artist]
-    christian_artists: QuerySet[Artist]
 
 
 def get_homepage_data() -> HomePageDTO:
@@ -19,7 +17,5 @@ def get_homepage_data() -> HomePageDTO:
     prefetch = ["genres", "main_genre"]
     return HomePageDTO(
         latest_artists=get_latest_artists(prefetch_related=prefetch),
-        random_artists=get_random_artists(prefetch_related=prefetch),
         favorite_artists=[],
-        christian_artists=get_artists_by_genre("Christian", prefetch_related=prefetch),
     )
