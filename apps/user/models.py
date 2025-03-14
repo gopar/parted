@@ -41,6 +41,7 @@ class User(AbstractUser):
 
     first_name = None  # type: ignore
     last_name = None  # type: ignore
+    username = None  # type: ignore
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=300, blank=True, null=True)
     is_active = models.BooleanField(default=True)
