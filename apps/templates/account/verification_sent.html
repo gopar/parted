@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{% translate "Verification Email Sent" %}{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+  <h1 class="text-2xl font-bold mb-6 text-center">{% translate "Verify Your Email Address" %}</h1>
+  
+  <div class="alert alert-info mb-6">
+    <div class="flex items-start">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <div>
+        <p>{% blocktranslate %}We have sent an email to you for verification. Please check your email and follow the link to complete the registration process. If you do not see the verification email in your main inbox, check your spam folder.{% endblocktranslate %}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card bg-base-200 shadow-sm mb-6">
+    <div class="card-body">
+      <h2 class="card-title">{% translate "What happens next?" %}</h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li>{% translate "Check your email inbox" %}</li>
+        <li>{% translate "Click the verification link in the email" %}</li>
+        <li>{% translate "Your account will be activated" %}</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="flex flex-col items-center gap-4">
+    <p>{% translate "Didn't receive the email?" %}</p>
+    <a href="{% url 'account_email' %}" class="btn btn-outline">{% translate "Change Email Address" %}</a>
+    <a href="{% url 'index' %}" class="btn btn-ghost">{% translate "Return to Home" %}</a>
+  </div>
+</div>
+{% endblock content %}
