@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Your Profile - Parted App{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Your Profile</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Profile Picture Section -->
+    <div class="card bg-base-200 shadow-md">
+      <div class="card-body items-center text-center">
+        <h2 class="card-title">Profile Picture</h2>
+        {% if user.fan_profile.profile_image %}
+          <div class="avatar">
+            <div class="w-24 rounded-full">
+              <img src="{{ user.fan_profile.profile_image.url }}" alt="{{ user.full_name }}" />
+            </div>
+          </div>
+        {% else %}
+          <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-24">
+              <span class="text-3xl">{{ user.email|first|upper }}</span>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Profile Information Form -->
+    <div class="md:col-span-2">
+      <form method="post" class="card bg-base-200 shadow-md" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+          <h2 class="card-title mb-4">Personal Information</h2>
+
+          <!-- Full Name -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">Full Name</span>
+            </label>
+            {{ form.full_name }}
+            {% if form.full_name.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.full_name.errors }}</span>
+              </label>
+            {% endif %}
+          </div>
+
+          <!-- Email -->
+          <div class="form-control w-full" title="Update your email in the next section">
+            <label class="label">
+              <span class="label-text">Email</span>
+            </label>
+            <input type="email" name="email" placeholder="{{ request.user.email }}" class="w-full input" disabled />
+          </div>
+
+          <!-- Bio -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">Bio</span>
+            </label>
+            {{ form.bio }}
+            {% if form.bio.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.bio.errors }}</span>
+              </label>
+            {% endif %}
+          </div>
+
+          <!-- Profile Image -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">Profile Image</span>
+            </label>
+            {{ form.profile_image }}
+            {% if form.profile_image.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.profile_image.errors }}</span>
+              </label>
+            {% endif %}
+          </div>
+
+          <div class="card-actions justify-end mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Password Change Section -->
+      <div class="card bg-base-200 shadow-md mt-6">
+        <div class="card-body">
+          <h2 class="card-title">Password</h2>
+          <p class="text-sm mb-4">Want to change your password?</p>
+          <div class="card-actions">
+            <a href="{% url 'account_change_password' %}" class="btn btn-outline">Change Password</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Addresses Section -->
+  <div class="card bg-base-200 shadow-md mt-6">
+    <div class="card-body">
+      <h2 class="card-title">Email Addresses</h2>
+      <p class="text-sm mb-4">Manage your email addresses</p>
+
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Primary</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for emailaddress in user.emailaddress_set.all %}
+            <tr>
+              <td>{{ emailaddress.email }}</td>
+              <td>
+                {% if emailaddress.verified %}
+                  <span class="badge badge-outline badge-success">Verified</span>
+                {% else %}
+                  <span class="badge badge-outline badge-warning">Unverified</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if emailaddress.primary %}
+                  <span class="badge badge-primary">Primary</span>
+                {% else %}
+                  <form method="post" action="{% url 'account_email' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="email" value="{{ emailaddress.email }}">
+                    <input type="hidden" name="action_primary" value="1">
+                    <button type="submit" class="btn btn-xs btn-outline">Make Primary</button>
+                  </form>
+                {% endif %}
+              </td>
+              <td class="flex gap-2">
+                {% if not emailaddress.verified %}
+                  <form method="post" action="{% url 'account_email_verification_sent' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="email" value="{{ emailaddress.email }}">
+                    <button type="submit" class="btn btn-xs btn-outline btn-info">Re-send Verification</button>
+                  </form>
+                {% endif %}
+
+                {% if not emailaddress.primary %}
+                  <form method="post" action="{% url 'account_email' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="email" value="{{ emailaddress.email }}">
+                    <input type="hidden" name="action_remove" value="1">
+                    <button type="submit" class="btn btn-xs btn-outline btn-error">Remove</button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center py-4">No additional email addresses found</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add New Email Form -->
+      <div class="mt-4">
+        <form method="post" action="{% url 'account_email' %}" class="flex gap-4 items-end">
+          {% csrf_token %}
+          <div class="form-control flex-grow">
+            <label class="label">
+              <span class="label-text">Add a new email address</span>
+            </label>
+            <input type="email" name="email" placeholder="email@example.com" class="input input-bordered w-full" required>
+          </div>
+          <button type="submit" class="btn btn-primary" name="action_add">Add Email</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connected Accounts Section -->
+  <div class="card bg-base-200 shadow-md mt-6">
+    <div class="card-body">
+      <h2 class="card-title">Connected Accounts</h2>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Connected</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Google</td>
+              <td>
+                <span class="badge badge-outline badge-error">Not Connected</span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline btn-primary">Connect</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

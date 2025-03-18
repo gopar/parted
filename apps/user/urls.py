@@ -8,4 +8,5 @@ urlpatterns = [
     path("news_feed/", views.news_feed, name="news-feed"),
     path("profile/", views.profile, name="profile"),
     path("settings/", views.settings, name="settings"),
+    path("accounts/email/", views.EmailView.as_view(), name="account_email"),
 ]

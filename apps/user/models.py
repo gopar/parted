@@ -62,7 +62,7 @@ class FanProfile(TimeStampedModel):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="profile",
+        related_name="fan_profile",
     )
     # favorite_songs = models.ManyToManyField(
     #     "Song", blank=True, related_name="favorited_by"
@@ -71,7 +71,8 @@ class FanProfile(TimeStampedModel):
     #     "Song", blank=True, related_name="purchased_by"
     # )
     following = models.ManyToManyField("artist.Artist", related_name="followers", blank=True)
-    bio = models.TextField()
+    bio = models.TextField(blank=True)
+    profile_image = models.ImageField(upload_to="profile_images/", blank=True, null=True)
 
     def __str__(self) -> str:
         return f"Fan profile of {self.user.email}"
