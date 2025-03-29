@@ -23,7 +23,7 @@ class UserProfileForm(forms.Form):
         if not initial and user:
             initial = {
                 "full_name": user.full_name or "",
-                "bio": user.fan_profile.bio or "",
+                "bio": "",
             }
             if hasattr(user, "fan_profile"):
                 initial["bio"] = user.fan_profile.bio

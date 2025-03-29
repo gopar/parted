@@ -212,5 +212,25 @@
     </div>
   </div>
 
+  <!-- Delete Accout Section -->
+  <div class="card bg-base-200 shadow-md mt-6">
+    <div class="card-body">
+      <h2 class="card-title text-red-500 font-bold">Delete Account</h2>
+      <p class="text-sm mb-4 font-bold">This action is irreversible</p>
+      <form method="post" action="{% url 'delete-account' %}" class="space-y-4">
+        {% csrf_token %}
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Type 'delete my account' to confirm</span>
+          </label>
+          <input type="text" name="confirmation" class="input input-bordered" required>
+        </div>
+        <div class="card-actions">
+          <button type="submit" class="btn btn-error">Delete My Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </div>
 {% endblock content %}

@@ -2,63 +2,87 @@ from typing import Any
 
 from allauth.account.views import EmailView as EmailDjangoAllAuthView
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 
 from apps.helpers import AuthenticatedHttpRequest
 from apps.user.forms import UserProfileForm
-from apps.user.services import get_homepage_data
+from apps.user.services import delete_account, get_homepage_data
 
-from .services import UpdateProfile, UpdateProfileResult, update_profile
-
-
-def index(request: HttpRequest) -> HttpResponse:
-    template = "pages/index.html"
-    if request.user.is_authenticated:
-        template = "pages/home_feed.html"
-
-    homepage_data = get_homepage_data()
-
-    return render(
-        request,
-        template,
-        context={
-            "latest_artists": homepage_data.latest_artists,
-            "favorite_artists": homepage_data.favorite_artists,
-        },
-    )
+from .services import DeleteAccountData, DeleteAccountResult, UpdateProfile, UpdateProfileResult, update_profile
 
 
-def about(request: HttpRequest) -> HttpResponse:
-    return render(request, "pages/about.html")
+class IndexView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        template = "pages/index.html"
+        if request.user.is_authenticated:
+            template = "pages/home_feed.html"
+
+        homepage_data = get_homepage_data()
+
+        return render(
+            request,
+            template,
+            context={
+                "latest_artists": homepage_data.latest_artists,
+                "favorite_artists": homepage_data.favorite_artists,
+            },
+        )
 
 
-@login_required
-def news_feed(request: HttpRequest) -> HttpResponse:
-    return render(request, "pages/news_feed.html")
+class AboutView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, "pages/about.html")
 
 
-@login_required
-def profile(request: AuthenticatedHttpRequest) -> HttpResponse:
-    if request.method == "POST":
+class NewsFeedView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, "pages/news_feed.html")
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        form = UserProfileForm(request.user)
+        return render(request, "pages/profile.html", {"form": form})
+
+    def post(self, request: AuthenticatedHttpRequest) -> HttpResponse:
         form = UserProfileForm(request.user, request.POST, request.FILES)
         if form.is_valid():
             data = UpdateProfile(**form.cleaned_data)
-            result: UpdateProfileResult = update_profile(request, data)
+            _result: UpdateProfileResult = update_profile(request.user, data)
 
             messages.success(request, "Profile updated successfully!")
             return redirect("profile")
-    else:
-        form = UserProfileForm(request.user)
 
-    return render(request, "pages/profile.html", {"form": form})
+        return render(request, "pages/profile.html", {"form": form})
 
 
-@login_required
-def settings(request: HttpRequest) -> HttpResponse:
-    return render(request, "pages/settings.html")
+class SettingsView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, "pages/settings.html")
+
+
+class DeleteAccountView(LoginRequiredMixin, View):
+    """
+    Handle user account deletion request.
+    """
+
+    def post(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        data = DeleteAccountData(confirmation=request.POST.get("confirmation", ""))
+        result: DeleteAccountResult = delete_account(request.user, data)
+
+        if result.success:
+            messages.success(request, result.message)
+            return redirect("index")
+        else:
+            messages.error(request, result.message)
+            return redirect("profile")
+
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        return redirect("profile")
 
 
 class EmailView(EmailDjangoAllAuthView):  # type: ignore
