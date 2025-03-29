@@ -1,19 +1,13 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
-from django.contrib.auth import get_user_model
 from django.core.files.images import ImageFile
 from django.db import transaction
 from django.db.models import QuerySet
 
 from apps.artist.models import Artist
 from apps.artist.selectors import get_favorite_artists, get_latest_artists
-from apps.user.models import FanProfile
-
-if TYPE_CHECKING:
-    from apps.user.models import User as UserType
-
-User = get_user_model()
+from apps.user.models import FanProfile, User
 
 
 @dataclass
@@ -55,7 +49,7 @@ class DeleteAccountResult:
 
 
 @transaction.atomic
-def delete_account(user: UserType, data: DeleteAccountData) -> DeleteAccountResult:
+def delete_account(user: User, data: DeleteAccountData) -> DeleteAccountResult:
     """
     Service to handle account deletion with proper validation.
     """
@@ -75,7 +69,7 @@ def delete_account(user: UserType, data: DeleteAccountData) -> DeleteAccountResu
 
 
 @transaction.atomic
-def update_profile(user: UserType, data: UpdateProfile) -> UpdateProfileResult:
+def update_profile(user: User, data: UpdateProfile) -> UpdateProfileResult:
     user.full_name = data.full_name
     user.save()
 

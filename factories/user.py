@@ -12,16 +12,20 @@ fake = Faker()
 
 def user_create(
     email: str = Auto,
+    password: str = "password",
     full_name: str = Auto,
     is_active: bool = True,
     is_staff: bool = False,
 ) -> User:
-    return User.objects.create(
+    user = User.objects.create(
         email=email or fake.email(),
         full_name=fake.name(),
         is_active=is_active,
         is_staff=is_staff,
     )
+    user.set_password(password)
+    user.save()
+    return user
 
 
 def fan_create(
