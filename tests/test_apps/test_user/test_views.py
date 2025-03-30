@@ -173,3 +173,120 @@ class TestEmailView:
         # Then they should be redirected to the profile page
         assert response.status_code == 302
         assert response.url == reverse("profile")
+
+
+@pytest.mark.django_db
+class TestSignupView:
+    def test_signup_view_get(self, client):
+        # Given an unauthenticated user
+        # When they visit the signup page
+        response = client.get(reverse("account_signup"))
+
+        # Then they should see the signup page
+        assert response.status_code == 200
+        assert "account/signup.html" in [t.name for t in response.templates]
+
+    def test_signup_view_post_success(self, client):
+        # Given an unauthenticated user
+        # When they submit valid signup data
+        data = {
+            "email": "newuser@example.com",
+            "password1": "StrongPassword123",
+            "password2": "StrongPassword123",
+        }
+        response = client.post(reverse("account_signup"), data)
+
+        # Then a new user should be created
+        assert response.status_code == 302  # Redirect after successful signup
+        assert User.objects.filter(email="newuser@example.com").exists()
+
+        # And they should be redirected to the email verification sent page
+        # (or to the specified next page if email verification is disabled)
+        assert reverse("account_email_verification_sent") in response.url
+
+    def test_signup_view_post_invalid_email(self, client):
+        # Given an unauthenticated user
+        # When they submit signup data with an invalid email
+        data = {
+            "email": "not-an-email",
+            "password1": "StrongPassword123",
+            "password2": "StrongPassword123",
+        }
+        response = client.post(reverse("account_signup"), data)
+
+        # Then they should see the signup page with form errors
+        assert response.status_code == 200
+        assert "account/signup.html" in [t.name for t in response.templates]
+        assert "form" in response.context
+        assert not response.context["form"].is_valid()
+        assert "email" in response.context["form"].errors
+
+    def test_signup_view_post_password_mismatch(self, client):
+        # Given an unauthenticated user
+        # When they submit signup data with mismatched passwords
+        data = {
+            "email": "newuser@example.com",
+            "password1": "StrongPassword123",
+            "password2": "DifferentPassword123",
+        }
+        response = client.post(reverse("account_signup"), data)
+
+        # Then they should see the signup page with form errors
+        assert response.status_code == 200
+        assert "account/signup.html" in [t.name for t in response.templates]
+        assert "form" in response.context
+        assert not response.context["form"].is_valid()
+        assert "password2" in response.context["form"].errors
+
+
+@pytest.mark.django_db
+class TestLoginView:
+    def test_login_view_get(self, client):
+        # Given an unauthenticated user
+        # When they visit the login page
+        response = client.get(reverse("account_login"))
+
+        # Then they should see the login page
+        assert response.status_code == 200
+        assert "account/login.html" in [t.name for t in response.templates]
+
+    def test_login_view_post_success(self, client, verified_user):
+        # Given a registered user
+        password = "testpassword123"
+        verified_user.set_password(password)
+        verified_user.save()
+
+        # When they submit valid login credentials
+        data = {
+            "login": verified_user.email,
+            "password": password,
+        }
+        response = client.post(reverse("account_login"), data)
+
+        # Then they should be logged in and redirected to the index page
+        assert response.status_code == 302
+        assert response.url == reverse("index")
+
+        # Verify the user is logged in
+        response = client.get(reverse("index"))
+        assert response.status_code == 200
+        assert "pages/home_feed.html" in [t.name for t in response.templates]
+
+    def test_login_view_post_invalid_credentials(self, client, user):
+        # Given a registered user
+        # When they submit invalid login credentials
+        data = {
+            "login": user.email,
+            "password": "wrongpassword",
+        }
+        response = client.post(reverse("account_login"), data)
+
+        # Then they should see the login page with form errors
+        assert response.status_code == 200
+        assert "account/login.html" in [t.name for t in response.templates]
+        assert "form" in response.context
+        assert not response.context["form"].is_valid()
+
+        # And they should not be logged in
+        response = client.get(reverse("index"))
+        assert "pages/index.html" in [t.name for t in response.templates]
