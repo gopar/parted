@@ -7,7 +7,7 @@ from django.db.models import QuerySet
 
 from apps.artist.models import Artist
 from apps.artist.selectors import get_favorite_artists, get_latest_artists
-from apps.user.models import FanProfile, User
+from apps.user.models import User
 
 
 @dataclass
@@ -73,12 +73,11 @@ def update_profile(user: User, data: UpdateProfile) -> UpdateProfileResult:
     user.full_name = data.full_name
     user.save()
 
-    fan_profile, created = FanProfile.objects.get_or_create(user=user)
-    fan_profile.bio = data.bio or ""
+    user.fan_profile.bio = data.bio or ""
 
     if data.profile_image:
-        fan_profile.profile_image = data.profile_image
+        user.fan_profile.profile_image = data.profile_image
 
-    fan_profile.save()
+    user.fan_profile.save()
 
     return UpdateProfileResult(success=True)

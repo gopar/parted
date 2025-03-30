@@ -2,7 +2,7 @@ import pytest
 from allauth.account.models import EmailAddress
 from django.test import RequestFactory
 
-from factories.user import user_create
+from factories.user import fan_create, user_create
 
 
 @pytest.fixture
@@ -22,6 +22,12 @@ def verified_user(db, user):
 
 
 @pytest.fixture
-def authenticated_client(client, verified_user):
-    client.force_login(verified_user)
+def fan_user(verified_user):
+    fan_create(user=verified_user)
+    return verified_user
+
+
+@pytest.fixture
+def authenticated_fan_client(client, fan_user):
+    client.force_login(fan_user)
     return client
