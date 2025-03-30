@@ -1,45 +1,13 @@
 # mypy: ignore-errors
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.messages.storage.fallback import FallbackStorage
-from django.test import RequestFactory
 from django.urls import reverse
 
 from apps.user.forms import UserProfileForm
 from apps.user.views import DeleteAccountView
-from factories.user import user_create
+from tests.utils import add_message_middleware
 
 User = get_user_model()
-
-
-@pytest.fixture
-def request_factory():
-    return RequestFactory()
-
-
-@pytest.fixture
-def user():
-    return user_create(email="test@example.com", password="password123")
-
-
-@pytest.fixture
-def authenticated_client(client, user):
-    # Make sure the user has a verified email address for allauth
-    from allauth.account.models import EmailAddress
-
-    EmailAddress.objects.create(user=user, email=user.email, verified=True, primary=True)
-
-    client.force_login(user)
-
-    return client
-
-
-def add_message_middleware(request):
-    """Add message middleware to request"""
-    setattr(request, "session", "session")
-    messages = FallbackStorage(request)
-    setattr(request, "_messages", messages)
-    return request
 
 
 class TestIndexView:
