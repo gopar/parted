@@ -4,8 +4,6 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from apps.user.forms import UserProfileForm
-from apps.user.views import DeleteAccountView
-from tests.utils import add_message_middleware
 
 User = get_user_model()
 
@@ -77,13 +75,8 @@ class TestProfileView:
         assert "pages/profile.html" in [t.name for t in response.templates]
         assert isinstance(response.context["form"], UserProfileForm)
 
-    def test_profile_view_post_valid(self, authenticated_fan_client, user, monkeypatch):
+    def test_profile_view_post_valid(self, authenticated_fan_client, user):
         # Given an authenticated user
-        # And a mocked update_profile service
-        def mock_update_profile(user, data):
-            return type("UpdateProfileResult", (), {"success": True})
-
-        monkeypatch.setattr("apps.user.views.update_profile", mock_update_profile)
 
         # When they submit valid profile data
         data = {
@@ -95,6 +88,10 @@ class TestProfileView:
         # Then they should be redirected to the profile page
         assert response.status_code == 302
         assert response.url == reverse("profile")
+
+        user.refresh_from_db()
+        assert user.full_name == data["full_name"]
+        assert user.fan_profile.bio == data["bio"]
 
     def test_profile_view_post_invalid(self, authenticated_fan_client, verified_user):
         # Given an authenticated user
@@ -141,47 +138,29 @@ class TestDeleteAccountView:
         assert response.status_code == 302
         assert response.url == reverse("profile")
 
-    def test_delete_account_view_post_success(self, authenticated_fan_client, user, monkeypatch, request_factory):
+    def test_delete_account_view_post_success(self, authenticated_fan_client, user):
         # Given an authenticated user
-        # And a mocked delete_account service that returns success
-        def mock_delete_account(user, data):
-            return type("DeleteAccountResult", (), {"success": True, "message": "Account deleted"})
-
-        monkeypatch.setattr("apps.user.views.delete_account", mock_delete_account)
-
-        # When they submit a valid delete account request
-        request = request_factory.post(reverse("delete-account"), {"confirmation": "DELETE"})
-        request.user = user
-        request = add_message_middleware(request)
-
-        view = DeleteAccountView()
-        view.setup(request)
-        response = view.post(request)
+        # When they request their account be deleted
+        response = authenticated_fan_client.post(reverse("delete-account"), {"confirmation": "delete my account"})
 
         # Then they should be redirected to the index page
         assert response.status_code == 302
         assert response.url == reverse("index")
 
-    def test_delete_account_view_post_failure(self, authenticated_fan_client, user, monkeypatch, request_factory):
+        # And the accout is deleted
+        with pytest.raises(User.DoesNotExist):
+            User.objects.get(id=user.id)
+
+    def test_delete_account_view_post_failure(self, authenticated_fan_client, user):
         # Given an authenticated user
-        # And a mocked delete_account service that returns failure
-        def mock_delete_account(user, data):
-            return type("DeleteAccountResult", (), {"success": False, "message": "Confirmation failed"})
-
-        monkeypatch.setattr("apps.user.views.delete_account", mock_delete_account)
-
-        # When they submit an invalid delete account request
-        request = request_factory.post(reverse("delete-account"), {"confirmation": "WRONG"})
-        request.user = user
-        request = add_message_middleware(request)
-
-        view = DeleteAccountView()
-        view.setup(request)
-        response = view.post(request)
+        # When they request their account be delete incorrectly
+        response = authenticated_fan_client.post(reverse("delete-account"), {"confirmation": "pikachu"})
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
         assert response.url == reverse("profile")
+
+        assert User.objects.get(id=user.id)
 
 
 @pytest.mark.django_db
