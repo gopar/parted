@@ -177,6 +177,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_EMAIL_VERIFICATION = True
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_ADAPTER = "config.adapter.PartedAdapter"
 
 # Django messages framework tags mapping to DaisyUI classes
 MESSAGE_TAGS = {
