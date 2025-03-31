@@ -14,10 +14,7 @@ class Genre(TimeStampedModel):
 
 
 class ArtistQuerySet(models.QuerySet["Artist"]):
-    def with_latest_artists(self) -> models.QuerySet["Artist"]:
-        """
-        Returns the latest n artists by creation date
-        """
+    def ordered_by_latest_artists(self) -> models.QuerySet["Artist"]:
         return self.order_by("-created")
 
 

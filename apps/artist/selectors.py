@@ -8,7 +8,7 @@ from apps.artist.models import Artist, Genre
 
 def get_latest_artists(count: int = 5, prefetch_related: List[str] | None = None) -> QuerySet[Artist]:
     """Get the latest artists by creation date."""
-    queryset = Artist.objects.with_latest_artists()
+    queryset = Artist.objects.ordered_by_latest_artists()
     if prefetch_related:
         queryset = queryset.prefetch_related(*prefetch_related)
     return queryset[:count]
