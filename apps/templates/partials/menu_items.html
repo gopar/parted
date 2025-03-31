@@ -1,5 +1,5 @@
-<li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'index' %}">Home</a></li>
-<li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'about' %}">About</a></li>
+<li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'user:index' %}">Home</a></li>
+<li><a {% if btn_class %}class="{{ btn_class }}"{% endif %} href="{% url 'user:about' %}">About</a></li>
 {% if user.is_authenticated %}
   <li>
     <form id="logout-form" action="{% url 'account_logout' %}" method="POST" {% if btn_class %}class="{{ btn_class }}"{% endif %}>

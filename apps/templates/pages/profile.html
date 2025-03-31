@@ -131,7 +131,7 @@
                 {% if emailaddress.primary %}
                   <span class="badge badge-primary">Primary</span>
                 {% else %}
-                  <form method="post" action="{% url 'account_email' %}">
+                  <form method="post" action="{% url 'user:account_email' %}">
                     {% csrf_token %}
                     <input type="hidden" name="email" value="{{ emailaddress.email }}">
                     <input type="hidden" name="action_primary" value="1">
@@ -149,7 +149,7 @@
                 {% endif %}
 
                 {% if not emailaddress.primary %}
-                  <form method="post" action="{% url 'account_email' %}">
+                  <form method="post" action="{% url 'user:account_email' %}">
                     {% csrf_token %}
                     <input type="hidden" name="email" value="{{ emailaddress.email }}">
                     <input type="hidden" name="action_remove" value="1">
@@ -169,7 +169,7 @@
 
       <!-- Add New Email Form -->
       <div class="mt-4">
-        <form method="post" action="{% url 'account_email' %}" class="flex gap-4 items-end">
+        <form method="post" action="{% url 'user:account_email' %}" class="flex gap-4 items-end">
           {% csrf_token %}
           <div class="form-control flex-grow">
             <label class="label">
@@ -217,7 +217,7 @@
     <div class="card-body">
       <h2 class="card-title text-red-500 font-bold">Delete Account</h2>
       <p class="text-sm mb-4 font-bold">This action is irreversible</p>
-      <form method="post" action="{% url 'delete_account' %}" class="space-y-4">
+      <form method="post" action="{% url 'user:delete_account' %}" class="space-y-4">
         {% csrf_token %}
         <div class="form-control">
           <label class="label">

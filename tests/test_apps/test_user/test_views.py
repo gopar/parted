@@ -9,10 +9,12 @@ User = get_user_model()
 
 
 class TestIndexView:
+    URL_INDEX = reverse("user:index")
+
     def test_index_view_unauthenticated(self, client):
         # Given an unauthenticated user
         # When they visit the index page
-        response = client.get(reverse("index"))
+        response = client.get(self.URL_INDEX)
 
         # Then they should see the index page
         assert response.status_code == 200
@@ -22,7 +24,7 @@ class TestIndexView:
     def test_index_view_authenticated(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the index page
-        response = authenticated_fan_client.get(reverse("index"))
+        response = authenticated_fan_client.get(self.URL_INDEX)
 
         # Then they should see the home feed page
         assert response.status_code == 200
@@ -32,10 +34,12 @@ class TestIndexView:
 
 
 class TestAboutView:
+    URL_ABOUT = reverse("user:about")
+
     def test_about_view(self, client):
         # Given any user
         # When they visit the about page
-        response = client.get(reverse("about"))
+        response = client.get(self.URL_ABOUT)
 
         # Then they should see the about page
         assert response.status_code == 200
@@ -44,10 +48,12 @@ class TestAboutView:
 
 @pytest.mark.django_db
 class TestNewsFeedView:
+    URL_NEWS_FEED = reverse("user:news_feed")
+
     def test_news_feed_view_authenticated(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the news feed page
-        response = authenticated_fan_client.get(reverse("news_feed"))
+        response = authenticated_fan_client.get(self.URL_NEWS_FEED)
 
         # Then they should see the news feed page
         assert response.status_code == 200
@@ -56,7 +62,7 @@ class TestNewsFeedView:
     def test_news_feed_view_unauthenticated(self, client):
         # Given an unauthenticated user
         # When they try to visit the news feed page
-        response = client.get(reverse("news_feed"))
+        response = client.get(self.URL_NEWS_FEED)
 
         # Then they should be redirected to the login page
         assert response.status_code == 302
@@ -65,10 +71,12 @@ class TestNewsFeedView:
 
 @pytest.mark.django_db
 class TestProfileView:
+    URL_PROFILE = reverse("user:profile")
+
     def test_profile_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the profile page
-        response = authenticated_fan_client.get(reverse("profile"))
+        response = authenticated_fan_client.get(self.URL_PROFILE)
 
         # Then they should see the profile page with a form
         assert response.status_code == 200
@@ -83,11 +91,11 @@ class TestProfileView:
             "full_name": "Test User",
             "bio": "This is a test bio",
         }
-        response = authenticated_fan_client.post(reverse("profile"), data)
+        response = authenticated_fan_client.post(self.URL_PROFILE, data)
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
-        assert response.url == reverse("profile")
+        assert response.url == self.URL_PROFILE
 
         user.refresh_from_db()
         assert user.full_name == data["full_name"]
@@ -97,7 +105,7 @@ class TestProfileView:
         # Given an authenticated user
         # When they submit invalid profile data
         # Note: We're not providing any data, which should make the form invalid
-        response = authenticated_fan_client.post(reverse("profile"), {}, follow=True)
+        response = authenticated_fan_client.post(self.URL_PROFILE, {}, follow=True)
 
         # Then they should see the profile page with form errors
         assert response.status_code == 200
@@ -108,10 +116,12 @@ class TestProfileView:
 
 @pytest.mark.django_db
 class TestSettingsView:
+    URL_SETTINGS = reverse("user:settings")
+
     def test_settings_view_authenticated(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the settings page
-        response = authenticated_fan_client.get(reverse("settings"))
+        response = authenticated_fan_client.get(self.URL_SETTINGS)
 
         # Then they should see the settings page
         assert response.status_code == 200
@@ -120,7 +130,7 @@ class TestSettingsView:
     def test_settings_view_unauthenticated(self, client):
         # Given an unauthenticated user
         # When they try to visit the settings page
-        response = client.get(reverse("settings"))
+        response = client.get(self.URL_SETTINGS)
 
         # Then they should be redirected to the login page
         assert response.status_code == 302
@@ -129,23 +139,27 @@ class TestSettingsView:
 
 @pytest.mark.django_db
 class TestDeleteAccountView:
+    URL_DELETE_ACCOUNT = reverse("user:delete_account")
+    URL_PROFILE = reverse("user:profile")
+    URL_INDEX = reverse("user:index")
+
     def test_delete_account_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they make a GET request to the delete account endpoint
-        response = authenticated_fan_client.get(reverse("delete_account"))
+        response = authenticated_fan_client.get(self.URL_DELETE_ACCOUNT)
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
-        assert response.url == reverse("profile")
+        assert response.url == self.URL_PROFILE
 
     def test_delete_account_view_post_success(self, authenticated_fan_client, user):
         # Given an authenticated user
         # When they request their account be deleted
-        response = authenticated_fan_client.post(reverse("delete_account"), {"confirmation": "delete my account"})
+        response = authenticated_fan_client.post(self.URL_DELETE_ACCOUNT, {"confirmation": "delete my account"})
 
         # Then they should be redirected to the index page
         assert response.status_code == 302
-        assert response.url == reverse("index")
+        assert response.url == self.URL_INDEX
 
         # And the accout is deleted
         with pytest.raises(User.DoesNotExist):
@@ -154,25 +168,28 @@ class TestDeleteAccountView:
     def test_delete_account_view_post_failure(self, authenticated_fan_client, user):
         # Given an authenticated user
         # When they request their account be delete incorrectly
-        response = authenticated_fan_client.post(reverse("delete_account"), {"confirmation": "pikachu"})
+        response = authenticated_fan_client.post(self.URL_DELETE_ACCOUNT, {"confirmation": "pikachu"})
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
-        assert response.url == reverse("profile")
+        assert response.url == self.URL_PROFILE
 
         assert User.objects.get(id=user.id)
 
 
 @pytest.mark.django_db
 class TestEmailView:
+    URL_ACCOUNT_EMAIL = reverse("user:account_email")
+    URL_PROFILE = reverse("user:profile")
+
     def test_email_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the email view
-        response = authenticated_fan_client.get(reverse("account_email"))
+        response = authenticated_fan_client.get(self.URL_ACCOUNT_EMAIL)
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
-        assert response.url == reverse("profile")
+        assert response.url == self.URL_PROFILE
 
 
 @pytest.mark.django_db
@@ -241,6 +258,8 @@ class TestSignupView:
 
 @pytest.mark.django_db
 class TestLoginView:
+    URL_INDEX = reverse("user:index")
+
     def test_login_view_get(self, client):
         # Given an unauthenticated user
         # When they visit the login page
@@ -265,10 +284,10 @@ class TestLoginView:
 
         # Then they should be logged in and redirected to the index page
         assert response.status_code == 302
-        assert response.url == reverse("index")
+        assert response.url == self.URL_INDEX
 
         # Verify the user is logged in
-        response = client.get(reverse("index"))
+        response = client.get(self.URL_INDEX)
         assert response.status_code == 200
         assert "pages/home_feed.html" in [t.name for t in response.templates]
 
@@ -288,5 +307,5 @@ class TestLoginView:
         assert not response.context["form"].is_valid()
 
         # And they should not be logged in
-        response = client.get(reverse("index"))
+        response = client.get(self.URL_INDEX)
         assert "pages/index.html" in [t.name for t in response.templates]

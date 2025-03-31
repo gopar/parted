@@ -33,7 +33,7 @@
     <nav class="navbar bg-base-100 shadow-sm">
       <!-- Left: App Name -->
       <div class="navbar-start">
-        <a class="btn btn-ghost text-xl" href="{% url 'index' %}">Parted</a>
+        <a class="btn btn-ghost text-xl" href="{% url 'user:index' %}">Parted</a>
       </div>
 
       <!-- Center: Search Bar -->
@@ -47,11 +47,11 @@
       <!-- Right: Alert Button & Profile Dropdown -->
       <div class="navbar-end gap-2">
         {% if not user.is_authenticated %}
-          <a class="btn btn-ghost" href="{% url 'about' %}">About</a>
+          <a class="btn btn-ghost" href="{% url 'user:about' %}">About</a>
           <a class="btn btn-ghost" href="{% url 'account_login' %}">Login</a>
         {% else %}
           <!-- Alert Button -->
-          <a href="{% url 'news_feed' %}" class="btn btn-ghost btn-circle">
+          <a href="{% url 'user:news_feed' %}" class="btn btn-ghost btn-circle">
             <div class="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -85,8 +85,8 @@
               tabindex="0"
               class="menu dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
             >
-              <li><a href="{% url 'profile' %}">Profile</a></li>
-              <li><a href="{% url 'settings' %}">Settings</a></li>
+              <li><a href="{% url 'user:profile' %}">Profile</a></li>
+              <li><a href="{% url 'user:settings' %}">Settings</a></li>
               <li>
                 {% if request.resolver_match.namespace == 'artist' %}
                   <a href="{% url 'user:index' %}">Switch to Fan Mode</a>
@@ -94,6 +94,7 @@
                   <a href="{% url 'artist:dashboard' %}">Switch to Artist Mode</a>
                 {% endif %}
               </li>
+
               <div class="divider m-0 p-0"></div>
               <li>
                 <a href="#" class="text-red-500" onclick="document.getElementById('logout-modal').showModal(); event.stopPropagation();">

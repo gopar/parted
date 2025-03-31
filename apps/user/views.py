@@ -55,7 +55,7 @@ class ProfileView(LoginRequiredMixin, View):
             _result: UpdateProfileResult = update_profile(request.user, data)
 
             messages.success(request, "Profile updated successfully!")
-            return redirect("profile")
+            return redirect("user:profile")
 
         return render(request, "pages/profile.html", {"form": form})
 
@@ -76,13 +76,13 @@ class DeleteAccountView(LoginRequiredMixin, View):
 
         if result.success:
             messages.success(request, result.message)
-            return redirect("index")
+            return redirect("user:index")
         else:
             messages.error(request, result.message)
-            return redirect("profile")
+            return redirect("user:profile")
 
     def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
-        return redirect("profile")
+        return redirect("user:profile")
 
 
 class EmailView(EmailDjangoAllAuthView):  # type: ignore
@@ -90,7 +90,7 @@ class EmailView(EmailDjangoAllAuthView):  # type: ignore
     Override django-allauth email view (view to manage emails) to redirect to profile view
     """
 
-    success_url = reverse_lazy("profile")
+    success_url = reverse_lazy("user:profile")
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return HttpResponseRedirect(self.get_success_url())
