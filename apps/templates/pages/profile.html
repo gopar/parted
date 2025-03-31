@@ -217,7 +217,7 @@
     <div class="card-body">
       <h2 class="card-title text-red-500 font-bold">Delete Account</h2>
       <p class="text-sm mb-4 font-bold">This action is irreversible</p>
-      <form method="post" action="{% url 'delete-account' %}" class="space-y-4">
+      <form method="post" action="{% url 'delete_account' %}" class="space-y-4">
         {% csrf_token %}
         <div class="form-control">
           <label class="label">

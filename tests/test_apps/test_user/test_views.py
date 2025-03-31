@@ -47,7 +47,7 @@ class TestNewsFeedView:
     def test_news_feed_view_authenticated(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the news feed page
-        response = authenticated_fan_client.get(reverse("news-feed"))
+        response = authenticated_fan_client.get(reverse("news_feed"))
 
         # Then they should see the news feed page
         assert response.status_code == 200
@@ -56,7 +56,7 @@ class TestNewsFeedView:
     def test_news_feed_view_unauthenticated(self, client):
         # Given an unauthenticated user
         # When they try to visit the news feed page
-        response = client.get(reverse("news-feed"))
+        response = client.get(reverse("news_feed"))
 
         # Then they should be redirected to the login page
         assert response.status_code == 302
@@ -132,7 +132,7 @@ class TestDeleteAccountView:
     def test_delete_account_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they make a GET request to the delete account endpoint
-        response = authenticated_fan_client.get(reverse("delete-account"))
+        response = authenticated_fan_client.get(reverse("delete_account"))
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
@@ -141,7 +141,7 @@ class TestDeleteAccountView:
     def test_delete_account_view_post_success(self, authenticated_fan_client, user):
         # Given an authenticated user
         # When they request their account be deleted
-        response = authenticated_fan_client.post(reverse("delete-account"), {"confirmation": "delete my account"})
+        response = authenticated_fan_client.post(reverse("delete_account"), {"confirmation": "delete my account"})
 
         # Then they should be redirected to the index page
         assert response.status_code == 302
@@ -154,7 +154,7 @@ class TestDeleteAccountView:
     def test_delete_account_view_post_failure(self, authenticated_fan_client, user):
         # Given an authenticated user
         # When they request their account be delete incorrectly
-        response = authenticated_fan_client.post(reverse("delete-account"), {"confirmation": "pikachu"})
+        response = authenticated_fan_client.post(reverse("delete_account"), {"confirmation": "pikachu"})
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
