@@ -87,6 +87,13 @@
             >
               <li><a href="{% url 'profile' %}">Profile</a></li>
               <li><a href="{% url 'settings' %}">Settings</a></li>
+              <li>
+                {% if request.resolver_match.namespace == 'artist' %}
+                  <a href="{% url 'user:index' %}">Switch to Fan Mode</a>
+                {% else %}
+                  <a href="{% url 'artist:dashboard' %}">Switch to Artist Mode</a>
+                {% endif %}
+              </li>
               <div class="divider m-0 p-0"></div>
               <li>
                 <a href="#" class="text-red-500" onclick="document.getElementById('logout-modal').showModal(); event.stopPropagation();">
