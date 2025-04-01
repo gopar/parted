@@ -3,4 +3,6 @@
          (eval . (setq-local projectile-project-compilation-cmd "docker-compose build -d"))
          (eval . (setq-local projectile-project-run-cmd "docker-compose exec web"))
          (eval . (setq-local gud-pdb-command-name "docker-compose exec web pytest --pdb "))
-         )))
+         ))
+ (python-ts-mode . ((eval . (setq-local devdocs-current-docs '("django~5.1" "python~3.12" "postgresql~17")))))
+ (web-mode . ((eval . (setq-local devdocs-current-docs '("javascript" "tailwindcss" "html" "htmx"))))))
