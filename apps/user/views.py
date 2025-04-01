@@ -12,7 +12,7 @@ from apps.helpers import AuthenticatedHttpRequest
 from apps.user.forms import UserProfileForm
 from apps.user.services import delete_account, get_homepage_data
 
-from .services import DeleteAccountData, DeleteAccountResult, UpdateProfile, UpdateProfileResult, update_profile
+from .services import DeleteAccountData, DeleteAccountResult, UpdateProfileData, UpdateProfileResult, update_profile
 
 
 class IndexView(View):
@@ -51,7 +51,7 @@ class ProfileView(LoginRequiredMixin, View):
     def post(self, request: AuthenticatedHttpRequest) -> HttpResponse:
         form = UserProfileForm(request.user, request.POST, request.FILES)
         if form.is_valid():
-            data = UpdateProfile(**form.cleaned_data)
+            data = UpdateProfileData(**form.cleaned_data)
             _result: UpdateProfileResult = update_profile(request.user, data)
 
             messages.success(request, "Profile updated successfully!")

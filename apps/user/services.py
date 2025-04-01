@@ -11,22 +11,22 @@ from apps.user.models import User
 
 
 @dataclass
-class HomePageDTO:
+class HomePageResult:
     latest_artists: QuerySet[Artist]
     favorite_artists: QuerySet[Artist]
 
 
-def get_homepage_data() -> HomePageDTO:
+def get_homepage_data() -> HomePageResult:
     """Get all data needed for the homepage."""
     prefetch = ["genres", "main_genre"]
-    return HomePageDTO(
+    return HomePageResult(
         latest_artists=get_latest_artists(prefetch_related=prefetch),
         favorite_artists=get_favorite_artists(prefetch_related=prefetch),
     )
 
 
 @dataclass
-class UpdateProfile:
+class UpdateProfileData:
     full_name: Optional[str]
     bio: Optional[str]
     profile_image: Optional[ImageFile]
@@ -69,7 +69,7 @@ def delete_account(user: User, data: DeleteAccountData) -> DeleteAccountResult:
 
 
 @transaction.atomic
-def update_profile(user: User, data: UpdateProfile) -> UpdateProfileResult:
+def update_profile(user: User, data: UpdateProfileData) -> UpdateProfileResult:
     user.full_name = data.full_name
     user.save()
 
