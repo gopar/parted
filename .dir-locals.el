@@ -1,0 +1,6 @@
+((nil . ((eval . (venv-workon "parted"))
+         (eval . (setq-local projectile-project-test-cmd "docker-compose exec web pytest"))
+         (eval . (setq-local projectile-project-compilation-cmd "docker-compose build -d"))
+         (eval . (setq-local projectile-project-run-cmd "docker-compose exec web"))
+         (eval . (setq-local gud-pdb-command-name "docker-compose exec web pytest --pdb "))
+         )))
