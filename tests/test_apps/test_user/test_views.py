@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from apps.user.forms import UserProfileForm
+from tests.utils import LoginRequiredTestMixin
 
 User = get_user_model()
 
@@ -47,36 +48,27 @@ class TestAboutView:
 
 
 @pytest.mark.django_db
-class TestNewsFeedView:
-    URL_NEWS_FEED = reverse("user:news_feed")
+class TestNewsFeedView(LoginRequiredTestMixin):
+    URL = reverse("user:news_feed")
 
     def test_news_feed_view_authenticated(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the news feed page
-        response = authenticated_fan_client.get(self.URL_NEWS_FEED)
+        response = authenticated_fan_client.get(self.URL)
 
         # Then they should see the news feed page
         assert response.status_code == 200
         assert "pages/news_feed.html" in [t.name for t in response.templates]
 
-    def test_news_feed_view_unauthenticated(self, client):
-        # Given an unauthenticated user
-        # When they try to visit the news feed page
-        response = client.get(self.URL_NEWS_FEED)
-
-        # Then they should be redirected to the login page
-        assert response.status_code == 302
-        assert "/accounts/login/" in response.url
-
 
 @pytest.mark.django_db
-class TestProfileView:
-    URL_PROFILE = reverse("user:profile")
+class TestProfileView(LoginRequiredTestMixin):
+    URL = reverse("user:profile")
 
     def test_profile_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the profile page
-        response = authenticated_fan_client.get(self.URL_PROFILE)
+        response = authenticated_fan_client.get(self.URL)
 
         # Then they should see the profile page with a form
         assert response.status_code == 200
@@ -91,11 +83,11 @@ class TestProfileView:
             "full_name": "Test User",
             "bio": "This is a test bio",
         }
-        response = authenticated_fan_client.post(self.URL_PROFILE, data)
+        response = authenticated_fan_client.post(self.URL, data)
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
-        assert response.url == self.URL_PROFILE
+        assert response.url == self.URL
 
         user.refresh_from_db()
         assert user.full_name == data["full_name"]
@@ -105,7 +97,7 @@ class TestProfileView:
         # Given an authenticated user
         # When they submit invalid profile data
         # Note: We're not providing any data, which should make the form invalid
-        response = authenticated_fan_client.post(self.URL_PROFILE, {}, follow=True)
+        response = authenticated_fan_client.post(self.URL, {}, follow=True)
 
         # Then they should see the profile page with form errors
         assert response.status_code == 200
@@ -115,38 +107,29 @@ class TestProfileView:
 
 
 @pytest.mark.django_db
-class TestSettingsView:
-    URL_SETTINGS = reverse("user:settings")
+class TestSettingsView(LoginRequiredTestMixin):
+    URL = reverse("user:settings")
 
     def test_settings_view_authenticated(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the settings page
-        response = authenticated_fan_client.get(self.URL_SETTINGS)
+        response = authenticated_fan_client.get(self.URL)
 
         # Then they should see the settings page
         assert response.status_code == 200
         assert "pages/settings.html" in [t.name for t in response.templates]
 
-    def test_settings_view_unauthenticated(self, client):
-        # Given an unauthenticated user
-        # When they try to visit the settings page
-        response = client.get(self.URL_SETTINGS)
-
-        # Then they should be redirected to the login page
-        assert response.status_code == 302
-        assert "/accounts/login/" in response.url
-
 
 @pytest.mark.django_db
-class TestDeleteAccountView:
-    URL_DELETE_ACCOUNT = reverse("user:delete_account")
+class TestDeleteAccountView(LoginRequiredTestMixin):
+    URL = reverse("user:delete_account")
     URL_PROFILE = reverse("user:profile")
     URL_INDEX = reverse("user:index")
 
     def test_delete_account_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they make a GET request to the delete account endpoint
-        response = authenticated_fan_client.get(self.URL_DELETE_ACCOUNT)
+        response = authenticated_fan_client.get(self.URL)
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
@@ -155,7 +138,7 @@ class TestDeleteAccountView:
     def test_delete_account_view_post_success(self, authenticated_fan_client, user):
         # Given an authenticated user
         # When they request their account be deleted
-        response = authenticated_fan_client.post(self.URL_DELETE_ACCOUNT, {"confirmation": "delete my account"})
+        response = authenticated_fan_client.post(self.URL, {"confirmation": "delete my account"})
 
         # Then they should be redirected to the index page
         assert response.status_code == 302
@@ -168,7 +151,7 @@ class TestDeleteAccountView:
     def test_delete_account_view_post_failure(self, authenticated_fan_client, user):
         # Given an authenticated user
         # When they request their account be delete incorrectly
-        response = authenticated_fan_client.post(self.URL_DELETE_ACCOUNT, {"confirmation": "pikachu"})
+        response = authenticated_fan_client.post(self.URL, {"confirmation": "pikachu"})
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
@@ -178,14 +161,14 @@ class TestDeleteAccountView:
 
 
 @pytest.mark.django_db
-class TestEmailView:
-    URL_ACCOUNT_EMAIL = reverse("user:account_email")
+class TestEmailView(LoginRequiredTestMixin):
+    URL = reverse("user:account_email")
     URL_PROFILE = reverse("user:profile")
 
     def test_email_view_get(self, authenticated_fan_client):
         # Given an authenticated user
         # When they visit the email view
-        response = authenticated_fan_client.get(self.URL_ACCOUNT_EMAIL)
+        response = authenticated_fan_client.get(self.URL)
 
         # Then they should be redirected to the profile page
         assert response.status_code == 302
