@@ -39,7 +39,7 @@ class AboutView(View):
 
 
 class NewsFeedView(LoginRequiredMixin, View):
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
         return render(request, "pages/news_feed.html")
 
 
@@ -61,7 +61,7 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 class SettingsView(LoginRequiredMixin, View):
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
         return render(request, "pages/settings.html")
 
 

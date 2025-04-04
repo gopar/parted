@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 from django.db.models.functions import Random
 
 from apps.artist.models import Artist, Genre
+from apps.user.models import User
 
 
 def get_latest_artists(count: int = 5, prefetch_related: List[str] | None = None) -> QuerySet[Artist]:
@@ -39,3 +40,9 @@ def get_artists_by_genre(
         return queryset[:count]
     except Genre.DoesNotExist:
         return Artist.objects.none()
+
+
+def get_user_artists_count(user: User) -> int:
+    """Get the count of artists associated with a user"""
+
+    return Artist.objects.filter(members=user).count()

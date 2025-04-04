@@ -23,16 +23,18 @@ class Artist(TimeStampedModel):
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="artist_profiles",
+        related_query_name="artist_profile",
         blank=True,
     )
     main_genre = models.ForeignKey(
         Genre,
         on_delete=models.SET_NULL,
         related_name="primary_artists",
+        related_query_name="primary_artist",
         null=True,
         blank=True,
     )
-    genres = models.ManyToManyField(Genre, related_name="artists", blank=True)
+    genres = models.ManyToManyField(Genre, related_name="artists", related_query_name="artist", blank=True)
 
     objects = ArtistQuerySet.as_manager()
 
