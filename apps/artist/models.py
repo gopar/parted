@@ -20,6 +20,7 @@ class ArtistProfileQuerySet(models.QuerySet["ArtistProfile"]):
 
 class ArtistProfile(TimeStampedModel):
     name = models.CharField(max_length=255, blank=False, null=False)
+    bio = models.TextField(blank=True)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="artist_profiles",
@@ -35,6 +36,12 @@ class ArtistProfile(TimeStampedModel):
         blank=True,
     )
     genres = models.ManyToManyField(Genre, related_name="artists", related_query_name="artist", blank=True)
+
+    # Social media links
+    website = models.URLField(max_length=200, blank=True)
+    instagram = models.CharField(max_length=30, blank=True)
+    twitter = models.CharField(max_length=30, blank=True)
+    youtube = models.URLField(max_length=200, blank=True)
 
     objects = ArtistProfileQuerySet.as_manager()
 
