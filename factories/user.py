@@ -2,7 +2,7 @@ from typing import List
 
 from faker import Faker
 
-from apps.artist.models import Artist
+from apps.artist.models import ArtistProfile
 from apps.user.models import FanProfile, User
 
 from .utils import Auto
@@ -30,7 +30,7 @@ def user_create(
 
 def fan_create(
     user: User = Auto,
-    following: List[Artist] = Auto,
+    following: List[ArtistProfile] = Auto,
     bio: str = Auto,
 ) -> FanProfile:
     user = user or user_create()

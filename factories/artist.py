@@ -3,7 +3,7 @@ from typing import List
 
 from faker import Faker
 
-from apps.artist.models import Artist, Genre
+from apps.artist.models import ArtistProfile, Genre
 from apps.user.models import User
 
 from .utils import Auto
@@ -15,7 +15,7 @@ def artist_create(
     name: str = Auto,
     members: User | List[User] = Auto,
     genres: List[str] = Auto,
-) -> Artist:
+) -> ArtistProfile:
     if not name:
         name = f"Band {fake.name()}"
 
@@ -24,7 +24,7 @@ def artist_create(
     if not genres:
         _genres = [genre_create() for _ in range(3)]
 
-    artist = Artist.objects.create(name=name, main_genre=_genres[0])
+    artist = ArtistProfile.objects.create(name=name, main_genre=_genres[0])
     artist.genres.add(*_genres)
 
     if isinstance(members, list):

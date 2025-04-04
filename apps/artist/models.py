@@ -13,12 +13,12 @@ class Genre(TimeStampedModel):
         ordering = ["name"]
 
 
-class ArtistQuerySet(models.QuerySet["Artist"]):
-    def ordered_by_latest_artists(self) -> models.QuerySet["Artist"]:
+class ArtistProfileQuerySet(models.QuerySet["ArtistProfile"]):
+    def ordered_by_latest_artists(self) -> models.QuerySet["ArtistProfile"]:
         return self.order_by("-created")
 
 
-class Artist(TimeStampedModel):
+class ArtistProfile(TimeStampedModel):
     name = models.CharField(max_length=255, blank=False, null=False)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -36,7 +36,7 @@ class Artist(TimeStampedModel):
     )
     genres = models.ManyToManyField(Genre, related_name="artists", related_query_name="artist", blank=True)
 
-    objects = ArtistQuerySet.as_manager()
+    objects = ArtistProfileQuerySet.as_manager()
 
     def __str__(self) -> str:
         return self.name

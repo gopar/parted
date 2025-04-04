@@ -5,15 +5,15 @@ from django.core.files.images import ImageFile
 from django.db import transaction
 from django.db.models import QuerySet
 
-from apps.artist.models import Artist
+from apps.artist.models import ArtistProfile
 from apps.artist.selectors import get_favorite_artists, get_latest_artists
 from apps.user.models import User
 
 
 @dataclass
 class HomePageResult:
-    latest_artists: QuerySet[Artist]
-    favorite_artists: QuerySet[Artist]
+    latest_artists: QuerySet[ArtistProfile]
+    favorite_artists: QuerySet[ArtistProfile]
 
 
 def get_homepage_data() -> HomePageResult:

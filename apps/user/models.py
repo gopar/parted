@@ -70,7 +70,7 @@ class FanProfile(TimeStampedModel):
     # purchased_songs = models.ManyToManyField(
     #     "Song", blank=True, related_name="purchased_by"
     # )
-    following = models.ManyToManyField("artist.Artist", related_name="followers", blank=True)
+    following = models.ManyToManyField("artist.ArtistProfile", related_name="followers", blank=True)
     bio = models.TextField(blank=True)
     profile_image = models.ImageField(upload_to="profile_images/", blank=True, null=True)
 
