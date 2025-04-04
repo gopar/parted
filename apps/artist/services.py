@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, List, Optional
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
+from apps.helpers import BaseData, BaseResult
+
 from .models import ArtistProfile, Genre
 
 if TYPE_CHECKING:
@@ -13,7 +15,7 @@ else:
 
 
 @dataclass
-class CreateArtistProfileData:
+class CreateArtistProfileData(BaseData):
     name: str
     bio: str
     main_genre: Optional[Genre] = None
@@ -24,11 +26,9 @@ class CreateArtistProfileData:
     youtube: str = ""
 
 
-@dataclass
-class CreateArtistProfileResult:
-    success: bool
+@dataclass(kw_only=True)
+class CreateArtistProfileResult(BaseResult):
     artist_profile: Optional[ArtistProfile] = None
-    message: str = ""
 
 
 @transaction.atomic

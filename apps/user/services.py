@@ -7,11 +7,12 @@ from django.db.models import QuerySet
 
 from apps.artist.models import ArtistProfile
 from apps.artist.selectors import get_favorite_artists, get_latest_artists
+from apps.helpers import BaseData, BaseResult
 from apps.user.models import User
 
 
-@dataclass
-class HomePageResult:
+@dataclass(kw_only=True)
+class HomePageResult(BaseResult):
     latest_artists: QuerySet[ArtistProfile]
     favorite_artists: QuerySet[ArtistProfile]
 
@@ -20,32 +21,32 @@ def get_homepage_data() -> HomePageResult:
     """Get all data needed for the homepage."""
     prefetch = ["genres", "main_genre"]
     return HomePageResult(
+        success=True,
         latest_artists=get_latest_artists(prefetch_related=prefetch),
         favorite_artists=get_favorite_artists(prefetch_related=prefetch),
     )
 
 
 @dataclass
-class UpdateProfileData:
+class UpdateProfileData(BaseData):
     full_name: Optional[str]
     bio: Optional[str]
     profile_image: Optional[ImageFile]
 
 
-@dataclass
-class UpdateProfileResult:
-    success: bool
+@dataclass(kw_only=True)
+class UpdateProfileResult(BaseResult):
+    pass
 
 
 @dataclass
-class DeleteAccountData:
+class DeleteAccountData(BaseData):
     confirmation: str
 
 
-@dataclass
-class DeleteAccountResult:
-    success: bool
-    message: str
+@dataclass(kw_only=True)
+class DeleteAccountResult(BaseResult):
+    pass
 
 
 @transaction.atomic
