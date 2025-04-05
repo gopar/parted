@@ -1,12 +1,14 @@
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Optional
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import QuerySet
 
 from apps.helpers import BaseData, BaseResult
 
 from .models import ArtistProfile, Genre
+from .selectors import get_artist_dashboard_data
 
 if TYPE_CHECKING:
     from apps.user.models import User
@@ -29,6 +31,39 @@ class CreateArtistProfileData(BaseData):
 @dataclass(kw_only=True)
 class CreateArtistProfileResult(BaseResult):
     artist_profile: Optional[ArtistProfile] = None
+
+
+@dataclass(kw_only=True)
+class ArtistDashboardResult(BaseResult):
+    artist_profile_count: int
+    artist: Optional[ArtistProfile] = None
+    artist_profiles: Optional[QuerySet[ArtistProfile]] = None
+    follower_count: int = 0
+    profile_views: int = 0
+    recent_activities: List[Dict[str, Any]] = field(default_factory=list)
+
+
+def get_artist_dashboard(user: User) -> ArtistDashboardResult:
+    """
+    Get dashboard data for an artist user.
+
+    Args:
+        user: The user to get dashboard data for
+
+    Returns:
+        ArtistDashboardResult with dashboard data
+    """
+    dashboard_data = get_artist_dashboard_data(user)
+
+    return ArtistDashboardResult(
+        success=True,
+        artist_profile_count=dashboard_data["artist_profile_count"],
+        artist=dashboard_data.get("artist"),
+        artist_profiles=dashboard_data.get("artist_profiles"),
+        follower_count=dashboard_data.get("follower_count", 0),
+        profile_views=dashboard_data.get("profile_views", 0),
+        recent_activities=dashboard_data.get("recent_activities", []),
+    )
 
 
 @transaction.atomic

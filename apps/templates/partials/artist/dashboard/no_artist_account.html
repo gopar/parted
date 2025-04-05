@@ -1,0 +1,15 @@
+<div class="bg-info/20 p-6 rounded-lg mb-8 max-w-3xl mx-auto">
+  <p class="text-lg mb-4">
+    Hey there! This section is for artists who want to upload music.
+    If this isn't you, then click the button to go back.
+    Otherwise, click the <em class="font-bold">Get Started</em> button to get started.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+    <a href="{% url 'user:index' %}" class="btn btn-outline">
+      Go Back to Fan Mode
+    </a>
+    <a href="{% url 'artist:profile' %}" class="btn btn-primary">
+      Get Started as an Artist
+    </a>
+  </div>
+</div>

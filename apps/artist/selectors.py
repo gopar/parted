@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List
 
 from django.db.models import QuerySet
 from django.db.models.functions import Random
@@ -46,3 +46,56 @@ def get_user_artists_count(user: User) -> int:
     """Get the count of artists associated with a user"""
 
     return ArtistProfile.objects.filter(members=user).count()
+
+
+def get_user_artist_profile(user: User) -> ArtistProfile | None:
+    """Get the artist profile for a user."""
+    try:
+        return ArtistProfile.objects.filter(members=user).first()
+    except ArtistProfile.DoesNotExist:
+        return None
+
+
+def get_artist_dashboard_data(user: User) -> Dict[str, Any]:
+    """
+    Get all data needed for the artist dashboard.
+
+    Args:
+        user: The user to get dashboard data for
+
+    Returns:
+        Dictionary with artist dashboard data
+    """
+    artist_profile_count = get_user_artists_count(user)
+    result: Dict[str, Any] = {"artist_profile_count": artist_profile_count}
+
+    if artist_profile_count == 1:
+        # Get the artist profile with prefetched genres
+        artist = ArtistProfile.objects.filter(members=user).prefetch_related("genres").first()
+
+        # Get follower count (mock for now)
+        follower_count = 0  # This would be calculated from a FanProfile.following relationship
+
+        # Get profile views (mock for now)
+        profile_views = 0  # This would be from an analytics system
+
+        # Get recent activities (mock for now)
+        recent_activities = [
+            {"date": "2023-06-15", "description": "Profile created"},
+            # Add more activities as needed
+        ]
+
+        result.update(
+            {
+                "artist": artist,
+                "follower_count": follower_count,
+                "profile_views": profile_views,
+                "recent_activities": recent_activities,
+            }
+        )
+    elif artist_profile_count > 1:
+        # Get all artist profiles for the user
+        artist_profiles = ArtistProfile.objects.filter(members=user).prefetch_related("genres")
+        result["artist_profiles"] = artist_profiles
+
+    return result

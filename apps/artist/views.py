@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
@@ -8,8 +10,7 @@ from apps.helpers import AuthenticatedHttpRequest
 
 from .forms import ArtistProfileForm
 from .models import Genre
-from .selectors import get_user_artists_count
-from .services import CreateArtistProfileData, create_artist_profile
+from .services import CreateArtistProfileData, create_artist_profile, get_artist_dashboard
 
 
 class ArtistProfileView(LoginRequiredMixin, View):
@@ -48,5 +49,5 @@ class ArtistProfileView(LoginRequiredMixin, View):
 
 class DashboardView(LoginRequiredMixin, View):
     def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
-        artist_profile_count = get_user_artists_count(request.user)
-        return render(request, "pages/artist/dashboard.html", context={"artist_profile_count": artist_profile_count})
+        dashboard_result = get_artist_dashboard(request.user)
+        return render(request, "pages/artist/dashboard.html", context=asdict(dashboard_result))
